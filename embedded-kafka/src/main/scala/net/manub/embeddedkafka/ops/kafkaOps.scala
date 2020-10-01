@@ -30,14 +30,16 @@ trait KafkaOps {
       kafkaLogDir: Path
   ) = {
     val zkAddress = s"localhost:$zooKeeperPort"
-    val listener  = s"${SecurityProtocol.PLAINTEXT}://localhost:$kafkaPort"
+    val listener  = s"${SecurityProtocol.PLAINTEXT}://0.0.0.0:$kafkaPort"
+    val advertisedListener =
+      s"${SecurityProtocol.PLAINTEXT}://kafka-mock-server:$kafkaPort"
 
     val brokerProperties = Map[String, Object](
       KafkaConfig.ZkConnectProp                          -> zkAddress,
       KafkaConfig.ZkConnectionTimeoutMsProp              -> zkConnectionTimeout.toMillis.toString,
       KafkaConfig.BrokerIdProp                           -> brokerId.toString,
       KafkaConfig.ListenersProp                          -> listener,
-      KafkaConfig.AdvertisedListenersProp                -> listener,
+      KafkaConfig.AdvertisedListenersProp                -> advertisedListener,
       KafkaConfig.AutoCreateTopicsEnableProp             -> autoCreateTopics.toString,
       KafkaConfig.LogDirProp                             -> kafkaLogDir.toAbsolutePath.toString,
       KafkaConfig.LogFlushIntervalMessagesProp           -> 1.toString,
